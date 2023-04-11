@@ -1,0 +1,86 @@
+﻿@model WebApplication1.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+<style>
+    .element {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .containers {
+        display: flex;
+        align-items: stretch;
+        height: 500px;
+        width: 100%;
+    }
+
+    .left-column {
+        flex-basis: 40%;
+    }
+
+    .right-column {
+        display: flex;
+        flex-direction: column;
+        flex-basis: 60%;
+        margin-left: 200px;
+    }
+
+    .top-row {
+        flex-basis: 33.33%;
+    }
+
+    .middle-row {
+        flex-basis: 33.33%;
+    }
+
+    .bottom-row {
+        flex-basis: 33.33%;
+    }
+</style>
+<h1>Details</h1>
+
+<div class="container" style="font-size:20px">
+    <div class="containers element">
+        <div class="left-column">
+            <img src="../../fileuploads/@Html.DisplayFor(model => model.Img)" style="width:350px;height:400px">
+        </div>
+        <div class="right-column ">
+            <div class="top-row">
+                <div>商品名稱：</div>
+                <div style="font-size:30px">@Html.DisplayFor(model => model.PName)</div>
+            </div>
+            <div class="middle-row">
+                <table style="width:700px;">
+                    <tr>
+                        <td style="width:50%;">
+                            <div>商品價格：<br />NT$ @Html.DisplayFor(model => model.Price)</div>
+
+                        </td>
+                        <td style="width:50%;">
+                            <div class="">商品庫存：<br /> @Html.DisplayFor(model => model.Stock)</div>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="bottom-row">
+                123
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <div>商品內容：</div>
+    @Html.Raw(ViewBag.FileContents)
+
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>

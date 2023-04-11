@@ -1,0 +1,230 @@
+﻿@model WebApplication1.Models.Product
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+<style>
+
+    .preview {
+        background: #888888;
+        width: 550px;
+        height: auto;
+        text-align: center;
+    }
+
+        .preview img {
+            height: 320px;
+            order: 1;
+            vertical-align: middle;
+        }
+</style>
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label class="control-label">商品名稱</label>
+                <input asp-for="PName" class="form-control" />
+                <span asp-validation-for="PName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">類別</label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">商品圖片</label>
+                <input name="Imgs" id="Imgs" type="file" accept="image/gif, image/jpeg, image/png" class="form-control" style="position:absolute;height:320px;width:550px;" />
+                <input asp-for="Img" class="form-control" style="display:none"/>
+
+                <span asp-validation-for="Img" class="text-danger"></span>
+            </div>
+            <div class="preview" style="float:left;background:#cccccc;height:320px;width:550px;text-align:center;z-index:1;"><p style="line-height: 300px;">未選擇任何檔案</p></div>
+            <div class="form-group">
+                <label  class="control-label">商品價格</label>
+                <input asp-for="Price" type="number" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">商品庫存</label>
+                <input asp-for="Stock" type="number"  class="form-control" />
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">商品內容</label>
+                <div id="editor" >
+                    <p>Hello World</p>
+                </div>              
+                <input asp-for="Contents" class="form-control"  />
+               <span asp-validation-for="Contents" class="text-danger"></span>
+@*                <div id="example">
+                    <p>Hello World</p>
+                </div>*@
+@*                <div id="editor">
+                    @Html.TextAreaFor(model => model.Contents, new { @class = "form-control", @rows = 20 })
+                </div>*@
+            </div>
+            <div class="form-group">
+                <input type="button" id="aaa" value="aaa" class="btn btn-primary" />
+
+               <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var input = document.getElementById('Imgs');
+        var preview = document.querySelector('.preview');
+        var fileName = document.getElementById('Img');
+
+        input.style.opacity = 0;
+        input.addEventListener('change', updateImageDisplay); function updateImageDisplay() {
+            var files = $("#Imgs").get(0).files;
+
+            var fileData = new FormData();
+
+            for (var i = 0; i < files.length; i++) {
+                fileData.append("files", files[i]);
+                //alert(files[i].);
+            }
+            console.log(fileData);
+            while (preview.firstChild) {
+                preview.removeChild(preview.firstChild);
+            }
+
+            if (input.files.length === 0) {
+                var para = document.createElement('p');
+                para.textContent = '未選擇任何檔案';
+                fileName.value = "";
+                para.style = "line-height: 300px;";
+                preview.appendChild(para);
+            }
+            else {
+                fileName.value = "";
+                var para = document.createElement('p');
+                var image = document.createElement('img');
+                image.style = "height:320px;width:550px;";
+                image.src = window.URL.createObjectURL(input.files[0]);
+                preview.appendChild(image);
+                preview.appendChild(para);
+                $.ajax({
+                    type: "POST",
+                    url: "/Ajaxfile/UploadFilesName",
+                    dataType: "json",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (result, status, xhr) {
+                        //$("#Files").text = result;
+                        if (document.getElementById("Img").value == "") {
+                            fileName.value = result;
+                        } 
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert(status);
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+
+
+        $(document).ready(function () {
+            $('#Create').submit(function (event) {
+                $('#editor input[type=text]').remove();
+                //$('#editor img').each(function () {
+                //    // 設定圖片的寬度和高度
+                //    $(this).css({ 'width': '500px', 'height': '300px' });
+                //});
+                var htmlContent = $('#editor').html();
+                $('#Contents').val(htmlContent);
+        var fileName = document.getElementById('Img');
+
+                var files = $("#Imgs").get(0).files;
+
+                var fileData = new FormData();
+
+
+                    fileData.append("files", files[0]);
+                    console.log(files[0]);
+                    //alert(files[i].);
+                if (input.files.length === 0) {
+                    event.preventDefault(); // 阻止表单默认提交行为
+                    var form = $(this); // 获取表单元素
+                    var formData = form.serialize(); // 序列化表单数据
+                    alert("請上傳圖片");
+                }
+
+
+                // 使用 AJAX 提交表单
+                $.ajax({
+
+                        type: "POST",
+                    url: "/Ajaxfile/UploadFiles",
+                        dataType: "json",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (result, status, xhr) {
+                            //$("#Files").text = result;
+                                fileName.value = result;
+
+                        },
+                        error: function (xhr, status, error) {
+                        }
+                 });
+            });
+        });
+    </script>
+    <script>
+        var quill = new Quill("#editor", {
+            theme: "snow", // 模板
+            modules: {
+                toolbar: [
+                    ['image'],
+                    ['bold', 'italic', 'underline', 'strike'],        // 切换按钮
+                    //   ['blockquote', 'code-block'],
+
+                    //   [{ 'header': 1 }, { 'header': 2 }],               // 用户自定义按钮值
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'script': 'sub' }, { 'script': 'super' }],      // 上标/下标
+                    [{ 'indent': '-1' }, { 'indent': '+1' }],          // 减少缩进/缩进
+                    //   [{ 'direction': 'rtl' }],                         // 文本下划线
+
+                    [{ 'size': ['small', false, 'large', 'huge'] }],  // 用户自定义下拉
+                    //   [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ 'color': [] }, { 'background': [] }],          // 主题默认下拉，使用主题提供的值
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+
+                    //   ['clean']                                         // 清除格式
+
+                ]
+            }
+        });
+        //quill.on('text-change', function () {
+        //    document.getElementById('Contents').value = editor.root.innerHTML;
+        //});
+        Quill.import('attributors/style/width').whitelist.push('300px', '300px');
+        Quill.import('attributors/style/height').whitelist.push('300px%', '300px');
+
+    </script>
+}

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<WebApplication1.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    List<Product> data = ViewBag.data;
+
+}
+
+<h1>購物頁面</h1>
+
+<p>
+</p>
+<div class="product-grid text-center">
+    @foreach (var item in data)
+    {
+        <div class="product">
+            <a asp-action="Details" asp-route-id="@item.Id" id="test">
+
+                <img src="../fileuploads/@Html.DisplayFor(modelItem => item.Img)" style="width:400px;height:500px">
+            </a>
+
+            <h3>
+                @Html.DisplayFor(modelItem => item.PName)
+            </h3>
+            <p>價格： @Html.DisplayFor(modelItem => item.Price)</p>
+
+        </div>
+    }
+
+    @section Scripts {
+@*        <script>
+            $(document).ready(function () {
+                $('#aaa').click(function () {
+                    //var ids = []; // 用來存儲所有的 ID
+                    //$('a[id="test"]').each(function () {
+                    //    var id = $(this).attr('asp-route-id');
+                    //    ids.push(id);
+                    //});
+                    //console.log(ids); // 在控制台中印出所有的 I
+                    //console.log(ids[0]);
+                    var dataIds = [];
+                    $('#example').each(function () {
+                        dataIds.push($(this).data('id'));
+                    });
+                    console.log(dataIds);
+                });
+            });
+        </script>*@
+    }
+</div>
+
